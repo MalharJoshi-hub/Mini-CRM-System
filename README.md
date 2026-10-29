@@ -59,6 +59,10 @@ mini-crm/
 │   ├── schema.sql                  # PostgreSQL table definitions, indices, and constraints
 │   ├── seed.sql                    # Initial seed data for users, accounts, and touchpoints
 │   └── init.sql                    # Docker container database initialization entrypoint
+├── scripts/
+│   ├── migrate.js                  # Database schema migration runner
+│   ├── seed.js                     # Seed data loader
+│   └── resetPassword.js            # User password reset & account provision CLI
 ├── lib/
 │   ├── auth.js                     # JWT issuance, verification, and role evaluation
 │   ├── db.js                       # PostgreSQL connection pool with telemetry and health check
@@ -73,6 +77,7 @@ mini-crm/
 │   ├── _document.js                # Document HTML structure and fonts
 │   ├── index.js                    # Landing redirect and portal routing
 │   ├── login.js                    # Operator login and session initialization
+│   ├── register.js                 # User registration & new operator onboarding
 │   ├── dashboard.js                # Executive intelligence KPI cockpit and action table
 │   ├── customers.js                # Customer account catalog and directory
 │   ├── add-customer.js             # Account onboarding and validation form
@@ -143,18 +148,34 @@ EMAIL_USER=your_email@domain.com
 EMAIL_PASS=your_email_app_password
 ```
 
-#### 4. Initialize Database Schema
-Execute the DDL and seed scripts against your PostgreSQL database:
+#### 4. Initialize Database Schema & Seed Data
+Execute the migration and seed scripts:
 ```bash
-psql -U postgres -d mini_crm -f db/schema.sql
-psql -U postgres -d mini_crm -f db/seed.sql
+npm run db:migrate
+npm run db:seed
 ```
+
+> **Default Demo Logins**:
+> - Admin: `admin@minicrm.io` / `password123`
+> - Admin: `admin@test.com` / `password123`
+>
+> **Password Reset / Create User CLI**:
+> If you ever forget your password or want to reset/create accounts from CLI:
+> ```bash
+> # Reset both default accounts to 'password123'
+> npm run reset-password
+>
+> # Or reset/create a specific account:
+> node scripts/resetPassword.js your_email@domain.com newPassword123 admin
+> ```
 
 #### 5. Start the Development Server
 ```bash
 npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) in your browser.
+- **Login**: [http://localhost:3000/login](http://localhost:3000/login) (includes 1-click autofill for demo accounts)
+- **Register New Login**: [http://localhost:3000/register](http://localhost:3000/register)
 
 #### 6. Start the Background Automation Scheduler
 In a separate terminal process, launch the automated follow-up cron worker:
