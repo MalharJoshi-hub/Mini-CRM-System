@@ -1,0 +1,35 @@
+{
+  "name": "mini-crm",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "scheduler": "node runScheduler.js",
+    "test": "jest --config jest.config.cjs --coverage",
+    "test:watch": "jest --config jest.config.cjs --watch"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.3.1",
+    "jsonwebtoken": "^9.0.3",
+    "next": "16.1.6",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.1",
+    "pg": "^8.19.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^8.0.9",
+    "@babel/preset-env": "^8.0.7",
+    "@tailwindcss/postcss": "^4",
+    "babel-jest": "^30.5.2",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "jest": "^30.5.2",
+    "tailwindcss": "^4"
+  }
+}
