@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "next start",
     "scheduler": "node runScheduler.js",
+    "db:migrate": "node scripts/migrate.js",
+    "db:seed": "node scripts/seed.js",
     "test": "jest --config jest.config.cjs --coverage",
     "test:watch": "jest --config jest.config.cjs --watch"
   },
