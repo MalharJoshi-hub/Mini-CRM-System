@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: crm_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: mini_crm
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./db/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mini_crm"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  crm-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: crm_web
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://postgres:postgres123@postgres:5432/mini_crm
+      JWT_SECRET: supersecretproductionkey-change-me
+      CRON_SCHEDULE: "* * * * *"
+    command: npm start
+
+  crm-scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: crm_scheduler
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres123@postgres:5432/mini_crm
+      JWT_SECRET: supersecretproductionkey-change-me
+      CRON_SCHEDULE: "* * * * *"
+    command: npm run scheduler
+
+volumes:
+  pgdata:
+    driver: local
