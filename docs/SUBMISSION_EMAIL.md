@@ -45,6 +45,7 @@ This release is submitted under **Track C (Platform Expansion & Enterprise Varia
 
 ### 📁 Repository & Submission Package Links
 
+- **GitHub Repository (Public):** https://github.com/MalharJoshi-hub/Mini-CRM-System
 - **Repository Branch:** `main` (clean working tree, production verified)
 - **Architecture Documentation:** [ARCHITECTURE.md](file:///c:/Users/malha/mini-crm/ARCHITECTURE.md)
 - **Product Requirements Document:** [PRD.md](file:///c:/Users/malha/mini-crm/PRD.md)

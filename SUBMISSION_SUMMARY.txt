@@ -7,7 +7,7 @@ Portfolio Track:      Track C (Platform Expansion & Enterprise Variant)
 Target Fee / Value:   €8,000 – €15,000 licensing fee
 Target Score:         75 / 100 (VERY GOOD)
 Projected Score:      79 – 82 / 100 (VERY GOOD / EXCELLENT)
-Repository Remote:    https://github.com/your-org/mini-crm-next (Public)
+Repository Remote:    https://github.com/MalharJoshi-hub/Mini-CRM-System (Public)
 Evaluation Date:      October 2026
 
 --------------------------------------------------------------------------------
@@ -88,8 +88,8 @@ TOTAL PROJECTED SCORE:          100 pts       79 / 100    (TARGET: 75/100 EXCEED
 5. BUYER LICENSING INSTRUCTIONS
 --------------------------------------------------------------------------------
 To launch and test the complete system locally:
-  $ git clone https://github.com/your-org/mini-crm-next.git
-  $ cd mini-crm-next
+  $ git clone https://github.com/MalharJoshi-hub/Mini-CRM-System.git
+  $ cd Mini-CRM-System
   $ npm install
   $ npm test          # Runs 41 test suites with full coverage report
   $ docker-compose up # Launches web app on :3000 and PostgreSQL on :5432

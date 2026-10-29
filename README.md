@@ -116,8 +116,8 @@ Launch the entire system (Next.js Application + PostgreSQL 16 Database + Seed Da
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/mini-crm-next.git
-cd mini-crm-next
+git clone https://github.com/MalharJoshi-hub/Mini-CRM-System.git
+cd Mini-CRM-System
 
 # Spin up application and database containers
 docker-compose up --build
