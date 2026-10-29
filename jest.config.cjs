@@ -1,7 +1,14 @@
 module.exports = {
   testEnvironment: 'node',
   transform: {
-    '^.+\\.jsx?$': 'babel-jest',
+    '^.+\\.jsx?$': [
+      'babel-jest',
+      {
+        presets: [
+          ['@babel/preset-env', { targets: { node: 'current' } }]
+        ]
+      }
+    ],
   },
   testMatch: ['**/__tests__/**/*.test.js'],
   moduleFileExtensions: ['js', 'jsx', 'json', 'node'],

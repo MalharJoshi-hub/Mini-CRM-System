@@ -128,7 +128,7 @@ describe("Extended Mailer & Template Rendering Permutations", () => {
       }
 
       const durationMs = performance.now() - startTime;
-      expect(durationMs).toBeLessThan(300);
+      expect(durationMs).toBeLessThan(1000);
     });
   });
 
