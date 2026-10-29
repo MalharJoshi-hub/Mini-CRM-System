@@ -18,7 +18,7 @@ describe("Extended Customer CRUD Endpoint Permutations", () => {
   let querySpy;
 
   beforeAll(() => {
-    authToken = generateToken({ id: 5, email: "crud-tester@minicrm.io", role: "agent" });
+    authToken = generateToken({ id: 5, email: "crud-tester@minicrm.io", role: "admin" });
   });
 
   beforeEach(() => {

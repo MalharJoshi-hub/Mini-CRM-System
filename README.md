@@ -80,13 +80,16 @@ mini-crm/
 │   ├── register.js                 # User registration & new operator onboarding
 │   ├── dashboard.js                # Executive intelligence KPI cockpit and action table
 │   ├── customers.js                # Customer account catalog and directory
+│   ├── outreach.js                 # Sales Agent daily outreach cockpit & touchpoint logger
+│   ├── followups.js                # Account Manager AI retention matrix & executive escalations
+│   ├── admin.js                    # Administrator governance console, operator RBAC & audit logs
 │   ├── add-customer.js             # Account onboarding and validation form
-│   ├── followups.js                # Dedicated action queue and status tracker
 │   ├── customer/
 │   │   └── [id].js                 # Customer 360 profile and interaction timeline
 │   └── api/
+│       ├── admin/                  # Operator management, audit logs, and telemetry
 │       ├── ai/decision.js          # Churn scoring and intervention recommendations API
-│       ├── auth/                   # Registration, login, and protected routes
+│       ├── auth/                   # Registration, login, profile, and evaluation role switcher
 │       ├── customers/              # Customer CRUD, list, and overdue accounts
 │       ├── interactions/           # Touchpoint logging, customer history, and lists
 │       ├── followups/              # Priority queue, churn rankings, and action logger
@@ -189,23 +192,51 @@ npm run scheduler
 
 All protected endpoints require the HTTP header: `Authorization: Bearer <JWT_TOKEN>`
 
-| Method | Endpoint | Description | Access |
+| Method | Endpoint | Description | Access / Role |
 | :--- | :--- | :--- | :--- |
 | `POST` | `/api/auth/register` | Register new CRM operator account | Public |
 | `POST` | `/api/auth/login` | Authenticate credentials and receive JWT | Public |
-| `GET` | `/api/customers/list` | Fetch full customer account directory | Protected |
-| `POST` | `/api/customers/add` | Onboard a new customer profile | Protected |
-| `PUT` | `/api/customers/update` | Update existing customer attributes | Protected |
-| `DELETE` | `/api/customers/delete` | Delete account and cascade associated data | Protected |
-| `GET` | `/api/customers/overdue` | Retrieve accounts uncontacted within 7+ days | Protected |
-| `GET` | `/api/interactions/list` | List all historical touchpoints | Protected |
-| `POST` | `/api/interactions/add` | Log a new call, meeting, or email note | Protected |
-| `GET` | `/api/interactions/customer`| Fetch chronological interaction timeline for an account | Protected |
-| `GET` | `/api/ai/decision` | Run predictive churn engine across all accounts | Protected |
-| `GET` | `/api/followups/churn` | Fetch accounts sorted by highest churn risk | Protected |
-| `GET` | `/api/followups/priority` | Fetch queue sorted by operational priority score | Protected |
-| `POST` | `/api/followups/action` | Execute and log recommended intervention action | Protected |
-| `GET` | `/api/automation/pending-followups` | Retrieve pending automated outreach candidates | Protected |
+| `GET` / `POST` | `/api/auth/me` | Current profile session & evaluation role switcher | Protected (All) |
+| `GET` | `/api/customers/list` | Fetch full customer account directory | Protected (All) |
+| `POST` | `/api/customers/add` | Onboard a new customer profile | Protected (All) |
+| `PUT` | `/api/customers/update` | Update existing customer attributes | Protected (All) |
+| `DELETE` | `/api/customers/delete` | Hard delete customer record (restricted to Admins) | Admin Only |
+| `GET` | `/api/customers/overdue` | Retrieve accounts uncontacted within 7+ days | Protected (All) |
+| `GET` | `/api/interactions/list` | List all historical touchpoints | Protected (All) |
+| `POST` | `/api/interactions/add` | Log a new call, meeting, or email note | Protected (All) |
+| `GET` | `/api/interactions/customer`| Fetch chronological interaction timeline for an account | Protected (All) |
+| `GET` | `/api/ai/decision` | Run predictive churn engine across all accounts | Protected (All) |
+| `GET` | `/api/followups/churn` | Fetch accounts sorted by highest churn risk | Manager / Admin |
+| `GET` | `/api/followups/priority` | Fetch queue sorted by operational priority score | Manager / Admin |
+| `POST` | `/api/followups/action` | Execute retention save or escalation action | Manager / Admin |
+| `GET` | `/api/admin/users` | List all operators and assign RBAC roles | Admin Only |
+| `PUT` | `/api/admin/users` | Modify operator role or toggle active/suspended status | Admin Only |
+| `GET` | `/api/admin/audit-logs` | Stream immutable security audit events | Admin Only |
+| `GET` | `/api/admin/system-stats`| Platform telemetry, scheduler status, and record counts | Admin Only |
+| `GET` | `/api/automation/pending-followups` | Retrieve pending automated outreach candidates | Protected (All) |
+
+---
+
+## 👥 Role-Based Access Control (RBAC) Architecture
+
+MiniCRM provides role-tailored workspaces while preserving shared core directory access:
+
+1. **👤 Sales Agent (`agent`)**:
+   - **Workspace**: [`pages/outreach.js`](file:///c:/Users/malha/mini-crm/pages/outreach.js) (`/outreach`)
+   - **Workflow**: Daily engagement queue showing accounts uncontacted for >7 days. Quick 1-click buttons to log phone calls, emails, and meetings. Add new prospect leads via [`pages/add-customer.js`](file:///c:/Users/malha/mini-crm/pages/add-customer.js).
+   - **Guardrails**: Blocked from customer deletion and administrator console.
+
+2. **💼 Account Manager (`manager`)**:
+   - **Workspace**: [`pages/followups.js`](file:///c:/Users/malha/mini-crm/pages/followups.js) (`/followups`)
+   - **Workflow**: Predictive churn mitigation matrix. Reviews accounts classified into `CRITICAL`, `HIGH`, or `MEDIUM` churn risk. Resolves executive escalations (`ESCALATE_MANAGER`) and triggers automated re-engagement workflows.
+   - **Guardrails**: Blocked from operator management, audit trail inspection, and account hard deletion.
+
+3. **👑 Administrator (`admin`)**:
+   - **Workspace**: [`pages/admin.js`](file:///c:/Users/malha/mini-crm/pages/admin.js) (`/admin`)
+   - **Workflow**: Full platform governance. Reassigns team roles (`agent` ↔ `manager` ↔ `admin`), toggles account activation, audits tamper-evident operational logs from `audit_logs`, inspects database pool telemetry, and holds exclusive authority to execute customer record deletions.
+
+> **💡 Evaluator Role Switcher**:
+> The navigation bar includes a live **Role View Switcher** (`[👤 Agent | 💼 Manager | 👑 Admin]`). Evaluators and prospective buyers can switch roles with a single click to immediately experience each role's dedicated screens and navigation filters in real time.
 
 ---
 

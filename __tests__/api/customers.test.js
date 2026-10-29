@@ -12,7 +12,7 @@ describe("Customers API Endpoints (/api/customers/*)", () => {
   let querySpy;
 
   beforeAll(() => {
-    validToken = generateToken({ id: 1, email: "agent@minicrm.io", role: "agent" });
+    validToken = generateToken({ id: 1, email: "admin@minicrm.io", role: "admin" });
   });
 
   beforeEach(() => {
@@ -182,6 +182,20 @@ describe("Customers API Endpoints (/api/customers/*)", () => {
       expect(res.statusCode).toBe(200);
       expect(res.data.message).toBe("Customer deleted successfully");
       expect(querySpy).toHaveBeenCalledWith("DELETE FROM customers WHERE id=$1", [5]);
+    });
+
+    test("denies deletion request from non-admin agent with 403 Forbidden", async () => {
+      const agentToken = generateToken({ id: 99, email: "agent@minicrm.io", role: "agent" });
+      const req = createMockRequest({
+        method: "DELETE",
+        token: agentToken,
+        body: { id: 5 },
+      });
+      const res = createMockResponse();
+
+      await deleteHandler(req, res);
+      expect(res.statusCode).toBe(403);
+      expect(res.data.error).toContain("Forbidden");
     });
   });
 

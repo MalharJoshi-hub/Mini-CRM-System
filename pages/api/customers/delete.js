@@ -1,5 +1,5 @@
 import pool from "../../../lib/db";
-import { verifyToken } from "../../../lib/auth";
+import { verifyToken, hasRole } from "../../../lib/auth";
 
 export default async function handler(req, res) {
   if (req.method !== "DELETE") {
@@ -7,7 +7,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    verifyToken(req);
+    const user = verifyToken(req);
+
+    if (!hasRole(user, "admin")) {
+      return res.status(403).json({ error: "Forbidden: Customer deletion requires administrator role" });
+    }
 
     const { id } = req.body;
 
